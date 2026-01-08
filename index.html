@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>בר מצווה יונתן דטנר - אישור הגעה</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=David+Libre:wght@400;700&display=swap');
+        body { font-family: 'David Libre', serif; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <script type="text/babel">
+        // ===== הגדרות - שנה את הערכים האלה! =====
+        const CONFIG = {
+            // הדבק כאן את הURL מ-Google Apps Script:
+            GOOGLE_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbwom-Owv75tHqlTVBPexKY7VWH18yO5Hot9WbQnNjZnvJh9HUgQ_UV9VyzRVSr5r8qR/exec',
+            
+            // הדבק כאן את כתובת התמונה מ-Imgur:
+            PHOTO_URL: 'https://imgur.com/a/YZekIJY'
+        };
+        // ==========================================
+
+        const { useState } = React;
+
+        function App() {
+            const [submitted, setSubmitted] = useState(false);
+            const [submitting, setSubmitting] = useState(false);
+            const [error, setError] = useState(null);
+            const [formData, setFormData] = useState({
+                name: '',
+                phone: '',
+                numGuests: 1,
+                attendingTorah: null,
+                attendingMeal: null,
+                notes: ''
+            });
+
+            const handleSubmit = async () => {
+                if (!formData.name || formData.attendingTorah === null || formData.attendingMeal === null) {
+                    alert('נא למלא את כל השדות הנדרשים');
+                    return;
+                }
+
+                setSubmitting(true);
+                setError(null);
+
+                try {
+                    await fetch(CONFIG.GOOGLE_SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(formData)
+                    });
+                    setSubmitted(true);
+                } catch (err) {
+                    setError('אירעה שגיאה, נסו שוב');
+                }
+                setSubmitting(false);
+            };
+
+            if (submitted) {
+                return (
+                    <div className="min-h-screen bg-white flex items-center justify-center p-4">
+                        <div className="bg-gray-50 rounded-2xl shadow-xl p-8 max-w-md text-center">
+                            <div className="text-6xl mb-4">✨</div>
+                            <h2 className="text-2xl font-bold text-gray-800 mb-2">תודה רבה!</h2>
+                            <p className="text-gray-600 mb-4">אישור ההגעה שלכם התקבל בהצלחה</p>
+                            <p className="text-gray-700 font-medium">נשמח לראותכם בשמחה!</p>
+                        </div>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="min-h-screen bg-white p-4">
+                    <div className="max-w-lg mx-auto">
+                        
+                        {/* Photo */}
+                        <div className="mb-6 pt-4">
+                            <img 
+                                src={CONFIG.PHOTO_URL} 
+                                alt="יונתן דטנר"
+                                className="w-full max-w-sm mx-auto rounded-lg shadow-lg"
+                                style={{ filter: 'grayscale(100%)' }}
+                            />
+                        </div>
+
+                        {/* Header */}
+                        <div className="text-center mb-6">
+                            <h1 className="text-4xl italic text-gray-800 mb-4" style={{ fontFamily: 'Georgia, serif' }}>
+                                Save the Date
+                            </h1>
+                            <h2 className="text-xl text-gray-700 mb-1">עליה לתורה</h2>
+                            <h3 className="text-2xl font-bold text-gray-900 mb-4">יונתן דטנר</h3>
+                            
+                            <div className="text-gray-700 space-y-1 mb-2">
+                                <p>יום שני, 23.2.26, בשעה 15:30</p>
+                                <p>שלום אש 4, כפר סבא</p>
+                                <p className="mt-2">לאחר העליה לתורה נתכנס כולנו לסעודה חגיגית</p>
+                            </div>
+                        </div>
+
+                        {/* Divider */}
+                        <div className="flex items-center gap-4 my-8">
+                            <div className="flex-1 h-px bg-gray-300"></div>
+                            <span className="text-gray-400 text-lg">✦</span>
+                            <div className="flex-1 h-px bg-gray-300"></div>
+                        </div>
+
+                        {/* Form */}
+                        <div className="bg-gray-50 rounded-2xl p-6 shadow-sm">
+                            <h4 className="text-lg font-bold text-gray-800 text-center mb-6">אישור הגעה</h4>
+                            
+                            {error && (
+                                <div className="bg-red-100 text-red-700 p-3 rounded-lg mb-4 text-center">
+                                    {error}
+                                </div>
+                            )}
+
+                            <div className="space-y-4">
+                                <div>
+                                    <label className="block text-gray-700 mb-1 font-medium">שם מלא *</label>
+                                    <input
+                                        type="text"
+                                        value={formData.name}
+                                        onChange={(e) => setFormData({...formData, name: e.target.value})}
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-transparent bg-white"
+                                        placeholder="הכניסו את שמכם"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-gray-700 mb-1 font-medium">טלפון</label>
+                                    <input
+                                        type="tel"
+                                        value={formData.phone}
+                                        onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-transparent bg-white"
+                                        placeholder="050-0000000"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-gray-700 mb-1 font-medium">מס׳ אורחים *</label>
+                                    <select
+                                        value={formData.numGuests}
+                                        onChange={(e) => setFormData({...formData, numGuests: parseInt(e.target.value)})}
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-transparent bg-white"
+                                    >
+                                        {[1,2,3,4,5,6,7,8,9,10].map(n => (
+                                            <option key={n} value={n}>{n}</option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                {/* Torah */}
+                                <div className="bg-white rounded-xl p-4 border border-gray-200">
+                                    <label className="block text-gray-800 mb-2 font-bold">עליה לתורה *</label>
+                                    <div className="flex gap-3">
+                                        <button
+                                            type="button"
+                                            onClick={() => setFormData({...formData, attendingTorah: true})}
+                                            className={`flex-1 py-2 px-4 rounded-lg font-medium transition-all ${
+                                                formData.attendingTorah === true 
+                                                    ? 'bg-gray-800 text-white shadow-md' 
+                                                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                            }`}
+                                        >
+                                            ✓ מגיעים
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => setFormData({...formData, attendingTorah: false})}
+                                            className={`flex-1 py-2 px-4 rounded-lg font-medium transition-all ${
+                                                formData.attendingTorah === false 
+                                                    ? 'bg-gray-400 text-white shadow-md' 
+                                                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                            }`}
+                                        >
+                                            ✗ לא מגיעים
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {/* Meal */}
+                                <div className="bg-white rounded-xl p-4 border border-gray-200">
+                                    <label className="block text-gray-800 mb-2 font-bold">סעודה חגיגית *</label>
+                                    <div className="flex gap-3">
+                                        <button
+                                            type="button"
+                                            onClick={() => setFormData({...formData, attendingMeal: true})}
+                                            className={`flex-1 py-2 px-4 rounded-lg font-medium transition-all ${
+                                                formData.attendingMeal === true 
+                                                    ? 'bg-gray-800 text-white shadow-md' 
+                                                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                            }`}
+                                        >
+                                            ✓ מגיעים
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => setFormData({...formData, attendingMeal: false})}
+                                            className={`flex-1 py-2 px-4 rounded-lg font-medium transition-all ${
+                                                formData.attendingMeal === false 
+                                                    ? 'bg-gray-400 text-white shadow-md' 
+                                                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                            }`}
+                                        >
+                                            ✗ לא מגיעים
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label className="block text-gray-700 mb-1 font-medium">הערות</label>
+                                    <textarea
+                                        value={formData.notes}
+                                        onChange={(e) => setFormData({...formData, notes: e.target.value})}
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-transparent bg-white"
+                                        rows={2}
+                                        placeholder="הגבלות תזונה, הערות נוספות..."
+                                    />
+                                </div>
+
+                                <button
+                                    type="button"
+                                    onClick={handleSubmit}
+                                    disabled={submitting}
+                                    className="w-full py-3 bg-gray-800 text-white font-bold rounded-xl hover:bg-gray-900 transition-all shadow-lg hover:shadow-xl disabled:opacity-50"
+                                >
+                                    {submitting ? 'שולח...' : 'שליחת אישור הגעה'}
+                                </button>
+                            </div>
+                        </div>
+
+                        <p className="text-center text-gray-400 text-sm mt-6 mb-8">
+                            משפחת דטנר שמחה לחגוג עמכם
+                        </p>
+                    </div>
+                </div>
+            );
+        }
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
+</body>
+</html>
