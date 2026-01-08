@@ -5,10 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>בר מצווה יונתן דטנר - אישור הגעה</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=David+Libre:wght@400;700&display=swap');
-        body { font-family: 'David Libre', serif; }
-    </style>
 </head>
 <body>
     <div id="root"></div>
@@ -18,13 +14,10 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     
     <script type="text/babel">
-        // ===== הגדרות - שנה את הערכים האלה! =====
+        // ===== הגדרות - שנה את הערך הזה! =====
         const CONFIG = {
             // הדבק כאן את הURL מ-Google Apps Script:
-            GOOGLE_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbwom-Owv75tHqlTVBPexKY7VWH18yO5Hot9WbQnNjZnvJh9HUgQ_UV9VyzRVSr5r8qR/exec',
-            
-            // הדבק כאן את כתובת התמונה מ-Imgur:
-            PHOTO_URL: 'https://imgur.com/a/39tq9UN'
+            GOOGLE_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbwom-Owv75tHqlTVBPexKY7VWH18yO5Hot9WbQnNjZnvJh9HUgQ_UV9VyzRVSr5r8qR/exec'
         };
         // ==========================================
 
@@ -81,17 +74,7 @@
 
             return (
                 <div className="min-h-screen bg-white p-4">
-                    <div className="max-w-lg mx-auto">
-                        
-                        {/* Photo */}
-                        <div className="mb-6 pt-4">
-                            <img 
-                                src={CONFIG.PHOTO_URL} 
-                                alt="יונתן דטנר"
-                                className="w-full max-w-sm mx-auto rounded-lg shadow-lg"
-                                style={{ filter: 'grayscale(100%)' }}
-                            />
-                        </div>
+                    <div className="max-w-lg mx-auto pt-8">
 
                         {/* Header */}
                         <div className="text-center mb-6">
